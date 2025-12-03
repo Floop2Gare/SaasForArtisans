@@ -34,12 +34,34 @@ export default function DevisPage() {
 
   return (
     <div className="space-y-6 pb-4">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-white border border-border rounded-2xl p-5 shadow-soft">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold">Mes devis</h1>
-          <p className="text-base text-ink-soft">Suivi clair des propositions.</p>
+      <div className="flex flex-col gap-4 bg-white border border-border rounded-2xl p-5 shadow-soft">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div className="space-y-1">
+            <h1 className="text-2xl font-bold">Mes devis</h1>
+            <p className="text-base text-ink-soft">Suivi clair des propositions.</p>
+          </div>
+          <PrimaryButton className="w-full md:w-auto text-lg">Nouveau devis</PrimaryButton>
         </div>
-        <PrimaryButton className="w-full md:w-auto text-lg">Nouveau devis</PrimaryButton>
+        <div className="grid gap-3 md:grid-cols-3">
+          <div className="bg-canvas rounded-xl border border-border px-4 py-3 text-base text-ink flex items-center gap-3">
+            <span className="text-xl" aria-hidden>
+              ✍️
+            </span>
+            <p>Renseignez un client puis les lignes : rien de plus.</p>
+          </div>
+          <div className="bg-canvas rounded-xl border border-border px-4 py-3 text-base text-ink flex items-center gap-3">
+            <span className="text-xl" aria-hidden>
+              ⏱️
+            </span>
+            <p>Chaque étape prend moins d’une minute.</p>
+          </div>
+          <div className="bg-canvas rounded-xl border border-border px-4 py-3 text-base text-ink flex items-center gap-3 md:col-span-1">
+            <span className="text-xl" aria-hidden>
+              ✅
+            </span>
+            <p>Le total est calculé automatiquement.</p>
+          </div>
+        </div>
       </div>
 
       <div className="space-y-3">
@@ -85,14 +107,17 @@ export default function DevisPage() {
           {[1, 2, 3].map((s) => (
             <button
               key={s}
-              className={`px-4 py-2 rounded-full text-base font-semibold border ${
+              className={`px-4 py-2 rounded-full text-base font-semibold border flex items-center gap-2 ${
                 step === s ? 'bg-primary text-white border-primary shadow-soft' : 'bg-canvas text-ink-soft border-border'
               }`}
               onClick={() => setStep(s)}
             >
-              {s === 1 && '1) Client'}
-              {s === 2 && '2) Détails du chantier'}
-              {s === 3 && '3) Lignes du devis'}
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full border border-white/40 bg-white/10 text-sm font-bold">
+                {s}
+              </span>
+              {s === 1 && 'Client'}
+              {s === 2 && 'Détails du chantier'}
+              {s === 3 && 'Lignes du devis'}
             </button>
           ))}
         </div>

@@ -6,12 +6,17 @@ import { ReactNode } from 'react'
 import SecondaryButton from './ui/SecondaryButton'
 
 const navLinks = [
-  { href: '/app/dashboard', label: 'Accueil' },
-  { href: '/app/clients', label: 'Clients' },
-  { href: '/app/devis', label: 'Devis' },
-  { href: '/app/factures', label: 'Factures' },
-  { href: '/app/profil', label: 'Profil' },
+  { href: '/app/dashboard', label: 'Accueil', icon: '🏠' },
+  { href: '/app/clients', label: 'Clients', icon: '👥' },
+  { href: '/app/devis', label: 'Devis', icon: '🧾' },
+  { href: '/app/factures', label: 'Factures', icon: '💶' },
+  { href: '/app/profil', label: 'Profil', icon: '⚙️' },
 ]
+
+function currentPageTitle(pathname: string) {
+  const match = navLinks.find((link) => pathname.startsWith(link.href))
+  return match?.label ?? 'Tableau de bord'
+}
 
 function DesktopNav({ pathname }: { pathname: string }) {
   return (
@@ -27,11 +32,14 @@ function DesktopNav({ pathname }: { pathname: string }) {
             <Link
               key={link.href}
               href={link.href}
-              className={`block px-4 py-3 rounded-xl text-lg font-semibold transition border border-transparent ${
+              className={`block px-4 py-3 rounded-xl text-lg font-semibold transition border border-transparent flex items-center gap-3 ${
                 active ? 'bg-primary text-white shadow-soft' : 'hover:bg-canvas text-ink hover:border-border'
               }`}
             >
-              {link.label}
+              <span className="text-xl" aria-hidden>
+                {link.icon}
+              </span>
+              <span className="leading-tight">{link.label}</span>
             </Link>
           )
         })}
@@ -47,19 +55,19 @@ function DesktopNav({ pathname }: { pathname: string }) {
 
 function MobileNav({ pathname }: { pathname: string }) {
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-border grid grid-cols-5 text-center text-sm">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-border grid grid-cols-5 text-center text-sm shadow-soft">
       {navLinks.map((link) => {
         const active = pathname.startsWith(link.href)
         return (
           <Link
             key={link.href}
             href={link.href}
-            className={`py-3 font-semibold flex flex-col items-center gap-1 ${
-              active ? 'text-primary' : 'text-ink-soft'
-            }`}
+            className={`py-3 font-semibold flex flex-col items-center gap-1 ${active ? 'text-primary' : 'text-ink-soft'}`}
           >
-            <span className="text-base leading-none">•</span>
-            <span>{link.label}</span>
+            <span className="text-xl leading-none" aria-hidden>
+              {link.icon}
+            </span>
+            <span className="text-[15px] leading-tight">{link.label}</span>
           </Link>
         )
       })}
@@ -74,10 +82,11 @@ export default function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen flex bg-canvas">
       <DesktopNav pathname={pathname} />
       <main className="flex-1 min-h-screen pb-24 lg:pb-10">
-        <header className="flex items-center justify-between px-4 lg:px-10 py-4 bg-white border-b border-border sticky top-0 z-20">
+        <header className="flex items-center justify-between px-4 lg:px-10 py-4 bg-white border-b border-border sticky top-0 z-20 backdrop-blur">
           <div className="space-y-0.5">
             <p className="text-xs uppercase text-ink-soft tracking-wide">MaçonPro Factures</p>
-            <p className="text-xl font-semibold text-ink">Tableau de bord clair</p>
+            <p className="text-xl font-semibold text-ink">{currentPageTitle(pathname)}</p>
+            <p className="text-sm text-ink-soft">Tout est regroupé ici pour aller vite.</p>
           </div>
           <form action="/api/auth/logout" method="post" className="hidden lg:block">
             <SecondaryButton type="submit">Déconnexion</SecondaryButton>

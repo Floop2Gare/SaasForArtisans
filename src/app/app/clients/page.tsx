@@ -13,12 +13,36 @@ function ClientsView({ clients }: { clients: { id: string; name: string; phone: 
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-white border border-border rounded-2xl p-5 shadow-soft">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold">Mes clients</h1>
-          <p className="text-base text-ink-soft">Contacts toujours à portée de main.</p>
+      <div className="flex flex-col gap-4 bg-white border border-border rounded-2xl p-5 shadow-soft">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div className="space-y-1">
+            <h1 className="text-2xl font-bold">Mes clients</h1>
+            <p className="text-base text-ink-soft">Contacts toujours à portée de main.</p>
+          </div>
+          <a href="#nouveau-client" className="w-full md:w-auto">
+            <PrimaryButton className="w-full md:w-auto text-lg">Nouveau client</PrimaryButton>
+          </a>
         </div>
-        <PrimaryButton className="w-full md:w-auto text-lg">Nouveau client</PrimaryButton>
+        <div className="grid gap-3 md:grid-cols-3">
+          <div className="bg-canvas rounded-xl border border-border px-4 py-3 text-base text-ink flex items-center gap-3">
+            <span className="text-xl" aria-hidden>
+              📞
+            </span>
+            <p>Ajoutez le téléphone pour rappeler en 1 clic.</p>
+          </div>
+          <div className="bg-canvas rounded-xl border border-border px-4 py-3 text-base text-ink flex items-center gap-3">
+            <span className="text-xl" aria-hidden>
+              🏠
+            </span>
+            <p>Notez une adresse ou une ville pour vous repérer.</p>
+          </div>
+          <div className="bg-canvas rounded-xl border border-border px-4 py-3 text-base text-ink flex items-center gap-3 md:col-span-1">
+            <span className="text-xl" aria-hidden>
+              ⭐
+            </span>
+            <p>Tout est sauvegardé automatiquement.</p>
+          </div>
+        </div>
       </div>
 
       <div className="space-y-4">
@@ -57,8 +81,14 @@ function ClientsView({ clients }: { clients: { id: string; name: string; phone: 
             <Card key={client.id}>
               <div className="flex flex-col gap-2">
                 <p className="text-xl font-bold text-ink">{client.name}</p>
-                <p className="text-base text-ink-soft">{client.phone || '—'}</p>
-                <p className="text-base text-ink-soft">{client.email || '—'}</p>
+                <div className="flex flex-wrap gap-2 text-base text-ink-soft">
+                  <span className="inline-flex items-center gap-1 bg-canvas px-3 py-1 rounded-full border border-border">
+                    📞 {client.phone || '—'}
+                  </span>
+                  <span className="inline-flex items-center gap-1 bg-canvas px-3 py-1 rounded-full border border-border">
+                    ✉️ {client.email || '—'}
+                  </span>
+                </div>
                 <form action={async () => archiveClientAction(client.id)}>
                   <button className="self-start text-primary font-semibold underline underline-offset-2" type="submit">
                     Archiver
@@ -70,7 +100,7 @@ function ClientsView({ clients }: { clients: { id: string; name: string; phone: 
         </div>
       </div>
 
-      <div className="bg-white border border-border rounded-2xl p-5 shadow-soft space-y-4">
+      <div id="nouveau-client" className="bg-white border border-border rounded-2xl p-5 shadow-soft space-y-4">
         <h2 className="text-xl font-semibold">Nouveau client</h2>
         {state.error && <p className="text-red-700 bg-red-50 border border-red-100 rounded-xl p-3 text-base">{state.error}</p>}
         {state.success && <p className="text-green-700 bg-green-50 border border-green-100 rounded-xl p-3 text-base">{state.success}</p>}

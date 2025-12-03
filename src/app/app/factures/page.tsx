@@ -23,12 +23,34 @@ export default function FacturesPage() {
 
   return (
     <div className="space-y-6 pb-4">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 bg-white border border-border rounded-2xl p-5 shadow-soft">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold">Mes factures</h1>
-          <p className="text-base text-ink-soft">Encaissez en toute simplicité.</p>
+      <div className="flex flex-col gap-4 bg-white border border-border rounded-2xl p-5 shadow-soft">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div className="space-y-1">
+            <h1 className="text-2xl font-bold">Mes factures</h1>
+            <p className="text-base text-ink-soft">Encaissez en toute simplicité.</p>
+          </div>
+          <PrimaryButton className="w-full md:w-auto text-lg">Nouvelle facture</PrimaryButton>
         </div>
-        <PrimaryButton className="w-full md:w-auto text-lg">Nouvelle facture</PrimaryButton>
+        <div className="grid gap-3 md:grid-cols-3">
+          <div className="bg-canvas rounded-xl border border-border px-4 py-3 text-base text-ink flex items-center gap-3">
+            <span className="text-xl" aria-hidden>
+              📮
+            </span>
+            <p>Envoyez la facture en PDF dès qu’elle est prête.</p>
+          </div>
+          <div className="bg-canvas rounded-xl border border-border px-4 py-3 text-base text-ink flex items-center gap-3">
+            <span className="text-xl" aria-hidden>
+              🔁
+            </span>
+            <p>Transformez un devis accepté en facture en 1 clic.</p>
+          </div>
+          <div className="bg-canvas rounded-xl border border-border px-4 py-3 text-base text-ink flex items-center gap-3 md:col-span-1">
+            <span className="text-xl" aria-hidden>
+              ✅
+            </span>
+            <p>Marquez “Payée” pour clôturer sans stress.</p>
+          </div>
+        </div>
       </div>
 
       <div className="space-y-3">

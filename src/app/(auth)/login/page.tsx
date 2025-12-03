@@ -35,8 +35,8 @@ function LoginForm() {
   const [state, formAction] = useFormState(handleLogin, { error: '' })
 
   return (
-    <form action={formAction} className="space-y-5">
-      <div className="space-y-3">
+    <form action={formAction} className="space-y-6">
+      <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <TextInput id="email" name="email" type="email" placeholder="vous@chantier.fr" required />
@@ -50,13 +50,23 @@ function LoginForm() {
       <PrimaryButton type="submit" className="w-full text-lg">
         Se connecter
       </PrimaryButton>
-      <p className="text-base text-ink-soft text-center">Vos données restent privées. Aucun paramétrage compliqué.</p>
-      <p className="text-base text-center text-ink-soft">
-        Pas encore de compte ?{' '}
-        <Link href="/register" className="text-primary font-semibold">
-          Créer un compte
-        </Link>
-      </p>
+      <div className="space-y-2 text-center text-base text-ink-soft">
+        <p>Vos données restent privées. Aucun paramétrage compliqué.</p>
+        <p>
+          Pas encore de compte ?{' '}
+          <Link href="/register" className="text-primary font-semibold">
+            Créer un compte
+          </Link>
+        </p>
+      </div>
+      <div className="bg-canvas border border-border rounded-2xl p-4 space-y-2 text-left">
+        <p className="font-semibold text-ink">En 3 minutes vous êtes prêt :</p>
+        <ul className="list-disc list-inside space-y-1 text-ink-soft text-base">
+          <li>Connexion simple avec votre email.</li>
+          <li>Vos clients, devis et factures regroupés.</li>
+          <li>Interface large et claire sur mobile.</li>
+        </ul>
+      </div>
     </form>
   )
 }
