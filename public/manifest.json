@@ -1,0 +1,20 @@
+{
+  "name": "MaçonPro Factures",
+  "short_name": "MaçonPro",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0049ac",
+  "icons": [
+    {
+      "src": "/icon",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/png"
+    }
+  ]
+}
