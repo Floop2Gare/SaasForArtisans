@@ -109,7 +109,7 @@ model Invoice {
   client        Client         @relation(fields: [clientId], references: [id])
   clientId      String
   quote         Quote?         @relation(fields: [quoteId], references: [id])
-  quoteId       String?
+  quoteId       String?        @unique
   status        InvoiceStatus  @default(BROUILLON)
   date          DateTime       @default(now())
   number        String
