@@ -1,0 +1,66 @@
+const SESSION_COOKIE = 'mp_session'
+const SESSION_TTL = 60 * 60 * 24 * 7 // 7 jours
+
+const encoder = new TextEncoder()
+const secret = process.env.AUTH_SECRET || 'dev-secret'
+
+// Utilise explicitement l’API Web Crypto pour l’Edge runtime (sans module Node "crypto").
+const webCrypto = globalThis.crypto
+
+let cachedKey: Promise<CryptoKey> | null = null
+
+function bufferToHex(buffer: ArrayBuffer) {
+  return Array.from(new Uint8Array(buffer))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('')
+}
+
+async function getKey() {
+  if (!webCrypto?.subtle) throw new Error('Web Crypto non disponible')
+  if (!cachedKey) {
+    cachedKey = webCrypto.subtle.importKey(
+      'raw',
+      encoder.encode(secret),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['sign']
+    )
+  }
+  return cachedKey
+}
+
+async function signPayload(payload: string) {
+  const key = await getKey()
+  const signature = await webCrypto!.subtle.sign('HMAC', key, encoder.encode(payload))
+  return bufferToHex(signature)
+}
+
+export async function createSignedToken(userId: string) {
+  if (!webCrypto) throw new Error('Web Crypto non disponible')
+  const expiresMs = Date.now() + SESSION_TTL * 1000
+  const nonce = webCrypto.randomUUID().replace(/-/g, '')
+  const rawPayload = `${userId}:${expiresMs}:${nonce}`
+  const signature = await signPayload(rawPayload)
+  return { token: `${rawPayload}.${signature}`, expires: new Date(expiresMs) }
+}
+
+export async function verifySignedToken(token?: string) {
+  if (!token) return null
+  // En cas d’environnement qui ne fournirait pas l’API Web Crypto (ou si elle n’est
+  // pas initialisée correctement), on renvoie simplement « non valide » au lieu de
+  // laisser remonter une exception qui casserait le middleware et provoquerait un
+  // écran blanc/404 en production.
+  if (!webCrypto?.subtle) return null
+  const parts = token.split(':').flatMap((chunk) => chunk.split('.'))
+  const [userId, expires, nonce, signature] = parts
+  if (!userId || !expires || !signature) return null
+
+  const rawPayload = `${userId}:${expires}:${nonce}`
+  const expected = await signPayload(rawPayload)
+  if (expected !== signature) return null
+  if (Number(expires) < Date.now()) return null
+
+  return { userId, expires: Number(expires) }
+}
+
+export { SESSION_COOKIE, SESSION_TTL }
