@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Utilise SQLite en développement (DATABASE_PROVIDER=sqlite) et PostgreSQL en production (DATABASE_PROVIDER=postgresql)
+datasource db {
+  provider = env("DATABASE_PROVIDER")
+  url      = env("DATABASE_URL")
+}
+
+enum QuoteStatus {
+  BROUILLON
+  ENVOYE
+  ACCEPTE
+  REFUSE
+}
+
+enum InvoiceStatus {
+  BROUILLON
+  ENVOYEE
+  PAYEE
+  ANNULEE
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  fullName  String
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  company   Company? @relation(fields: [companyId], references: [id])
+  companyId String?
+}
+
+model Company {
+  id          String    @id @default(cuid())
+  name        String
+  address     String?
+  siret       String?
+  vatNumber   String?
+  phone       String?
+  email       String?
+  logoUrl     String?
+  users       User[]
+  clients     Client[]
+  quotes      Quote[]
+  invoices    Invoice[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Client {
+  id         String    @id @default(cuid())
+  company    Company   @relation(fields: [companyId], references: [id])
+  companyId  String
+  name       String
+  phone      String?
+  email      String?
+  address    String?
+  archived   Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  quotes     Quote[]
+  invoices   Invoice[]
+}
+
+model Quote {
+  id                 String       @id @default(cuid())
+  company            Company      @relation(fields: [companyId], references: [id])
+  companyId          String
+  client             Client       @relation(fields: [clientId], references: [id])
+  clientId           String
+  status             QuoteStatus  @default(BROUILLON)
+  date               DateTime     @default(now())
+  number             String
+  paymentTerms       String?
+  totalHT            Decimal      @default(0)
+  totalTVA           Decimal      @default(0)
+  totalTTC           Decimal      @default(0)
+  title              String?
+  description        String?
+  workAddress        String?
+  lines              QuoteLine[]
+  invoice            Invoice?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  @@unique([companyId, number])
+}
+
+model QuoteLine {
+  id            String   @id @default(cuid())
+  quote         Quote    @relation(fields: [quoteId], references: [id])
+  quoteId       String
+  description   String
+  quantity      Decimal  @default(0)
+  unitPriceHT   Decimal  @default(0)
+  tvaRate       Decimal  @default(20)
+  lineTotalHT   Decimal  @default(0)
+  lineTotalTVA  Decimal  @default(0)
+  lineTotalTTC  Decimal  @default(0)
+}
+
+model Invoice {
+  id            String         @id @default(cuid())
+  company       Company        @relation(fields: [companyId], references: [id])
+  companyId     String
+  client        Client         @relation(fields: [clientId], references: [id])
+  clientId      String
+  quote         Quote?         @relation(fields: [quoteId], references: [id])
+  quoteId       String?
+  status        InvoiceStatus  @default(BROUILLON)
+  date          DateTime       @default(now())
+  number        String
+  totalHT       Decimal        @default(0)
+  totalTVA      Decimal        @default(0)
+  totalTTC      Decimal        @default(0)
+  lines         InvoiceLine[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@unique([companyId, number])
+}
+
+model InvoiceLine {
+  id            String   @id @default(cuid())
+  invoice       Invoice  @relation(fields: [invoiceId], references: [id])
+  invoiceId     String
+  description   String
+  quantity      Decimal  @default(0)
+  unitPriceHT   Decimal  @default(0)
+  tvaRate       Decimal  @default(20)
+  lineTotalHT   Decimal  @default(0)
+  lineTotalTVA  Decimal  @default(0)
+  lineTotalTTC  Decimal  @default(0)
+}
