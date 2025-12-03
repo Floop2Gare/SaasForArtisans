@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: 'Facturation et devis simples pour artisans maçons.',
   manifest: '/manifest.json',
   icons: {
-    icon: [{ url: '/icon' }, { url: '/favicon.ico' }],
+    icon: [{ url: '/icon' }],
     apple: [{ url: '/icon' }],
   },
 }
