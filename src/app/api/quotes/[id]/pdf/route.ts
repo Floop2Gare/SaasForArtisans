@@ -17,9 +17,10 @@ async function buildQuotePdf(id: string) {
   const pdfDoc = await PDFDocument.create()
   const page = pdfDoc.addPage([595.28, 841.89]) // A4
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
+  const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
 
   const drawText = (text: string, x: number, y: number, size = 12, bold = false) => {
-    page.drawText(text, { x, y, size, font, color: rgb(0, 0, 0), font: font })
+    page.drawText(text, { x, y, size, font: bold ? fontBold : font, color: rgb(0, 0, 0) })
   }
 
   drawText(quote.company.name, 40, 800, 16)
