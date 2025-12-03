@@ -46,6 +46,11 @@ export async function createSignedToken(userId: string) {
 
 export async function verifySignedToken(token?: string) {
   if (!token) return null
+  // En cas d’environnement qui ne fournirait pas l’API Web Crypto (ou si elle n’est
+  // pas initialisée correctement), on renvoie simplement « non valide » au lieu de
+  // laisser remonter une exception qui casserait le middleware et provoquerait un
+  // écran blanc/404 en production.
+  if (!webCrypto?.subtle) return null
   const parts = token.split(':').flatMap((chunk) => chunk.split('.'))
   const [userId, expires, nonce, signature] = parts
   if (!userId || !expires || !signature) return null
