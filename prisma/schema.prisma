@@ -2,9 +2,9 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Utilise SQLite en développement (DATABASE_PROVIDER=sqlite) et PostgreSQL en production (DATABASE_PROVIDER=postgresql)
+// Provider fixé à PostgreSQL pour garantir la compatibilité Vercel
 datasource db {
-  provider = env("DATABASE_PROVIDER")
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

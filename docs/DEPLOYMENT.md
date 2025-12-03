@@ -1,24 +1,15 @@
 # Déploiement sur Vercel
 
-Guide opérationnel pour passer de l'environnement local (SQLite) à une production Vercel avec PostgreSQL.
+Guide opérationnel pour passer de l'environnement local à une production Vercel avec PostgreSQL.
 
 ## 1. Préparer Prisma pour deux environnements
 
 ### Fichier `prisma/schema.prisma`
-- Le datasource utilise maintenant `provider = env("DATABASE_PROVIDER")` et `url = env("DATABASE_URL")`.
-- En développement :
-  ```env
-  DATABASE_PROVIDER=sqlite
-  DATABASE_URL="file:./dev.db"
-  ```
-- En production (ex. PostgreSQL) :
-  ```env
-  DATABASE_PROVIDER=postgresql
-  DATABASE_URL="postgresql://user:password@host:5432/dbname"
-  ```
+- Le datasource fixe désormais `provider = "postgresql"` avec `url = env("DATABASE_URL")` pour rester compatible Vercel.
+- En développement comme en production, utilisez une URL PostgreSQL (locale ou distante) via `DATABASE_URL`.
 
 ### Génération et migrations
-- Local (SQLite) :
+- Local (PostgreSQL, ex. Docker ou Supabase) :
   ```bash
   npm install
   npx prisma generate
@@ -41,7 +32,6 @@ Ajoutez-les dans **Project Settings > Environment Variables** :
 
 | Nom | Description | Exemple |
 | --- | ----------- | ------- |
-| `DATABASE_PROVIDER` | `postgresql` en production (indispensable pour Prisma) | `postgresql` |
 | `DATABASE_URL` | URL de connexion PostgreSQL | `postgresql://user:password@host:5432/dbname` |
 | `NEXT_PUBLIC_APP_URL` | URL publique du site | `https://maconpro.vercel.app` |
 | `AUTH_SECRET` | Secret pour la signature des sessions | chaîne aléatoire longue |
@@ -61,7 +51,7 @@ Ajoutez-les dans **Project Settings > Environment Variables** :
    ```bash
    npm install
    ```
-2. Générer Prisma et appliquer les migrations SQLite :
+2. Générer Prisma et appliquer les migrations sur votre base PostgreSQL locale ou distante :
    ```bash
    npx prisma generate
    npx prisma migrate dev
@@ -96,7 +86,7 @@ Ajoutez-les dans **Project Settings > Environment Variables** :
 
 ### D. Base de données PostgreSQL en production
 1. Créer une base (Supabase, Vercel Postgres ou équivalent) et récupérer l'URL `DATABASE_URL`.
-2. Coller cette URL et `DATABASE_PROVIDER=postgresql` dans les variables d'environnement Vercel.
+2. Coller cette URL dans les variables d'environnement Vercel.
 3. Appliquer les migrations sur la base distante après le premier déploiement :
    - Option simple : ouvrir un terminal Vercel (ou utiliser `vercel env pull` localement) et exécuter :
      ```bash
@@ -111,7 +101,7 @@ Ajoutez-les dans **Project Settings > Environment Variables** :
   - `DATABASE_URL` manquant ou incorrect → vérifier l'URL et les variables sur Vercel.
   - Migrations non appliquées → exécuter `npm run prisma:migrate:deploy` sur la base de prod.
   - `AUTH_SECRET` absent → ajouter une chaîne aléatoire (32+ caractères) dans les variables d'env.
-- Pour reproduire en local avec PostgreSQL : définir `DATABASE_PROVIDER=postgresql` et une URL valide, puis lancer `npx prisma migrate dev`.
+- Pour reproduire en local avec PostgreSQL : définir `DATABASE_URL` vers votre instance locale (ex. `postgresql://postgres:postgres@localhost:5432/maconpro`) puis lancer `npx prisma migrate dev`.
 
 ## 6. Check-list rapide avant prod
 - [ ] Variables d'environnement ajoutées sur Vercel (Production + éventuellement Preview).
