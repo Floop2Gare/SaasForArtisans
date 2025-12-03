@@ -25,6 +25,6 @@ export async function handleLogin(prevState: { error?: string }, formData: FormD
     return { error: 'Mot de passe incorrect.' }
   }
 
-  createSession(user.id)
+  await createSession(user.id)
   redirect('/app/dashboard')
 }

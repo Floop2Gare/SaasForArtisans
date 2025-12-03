@@ -30,6 +30,6 @@ export async function handleRegister(prevState: { error?: string }, formData: Fo
     data: { email, fullName, password: hashed, company: { connect: { id: company.id } } },
   })
 
-  createSession(user.id)
+  await createSession(user.id)
   redirect('/app/dashboard')
 }
