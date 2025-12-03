@@ -2,8 +2,6 @@ import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
 
-export const contentType = 'image/png'
-
 // Génère un favicon léger (fond bleu, texte "MP") sans dépendre d'un fichier binaire.
 export async function GET() {
   return new ImageResponse(
