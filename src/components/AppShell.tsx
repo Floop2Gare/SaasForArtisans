@@ -6,13 +6,13 @@ import type { Route } from 'next'
 import { ReactNode } from 'react'
 import SecondaryButton from './ui/SecondaryButton'
 
-const navLinks = [
-  { href: '/app/dashboard', label: 'Accueil', icon: '🏠' },
-  { href: '/app/clients', label: 'Clients', icon: '👥' },
-  { href: '/app/devis', label: 'Devis', icon: '🧾' },
-  { href: '/app/factures', label: 'Factures', icon: '💶' },
-  { href: '/app/profil', label: 'Profil', icon: '⚙️' },
-] satisfies { href: Route; label: string; icon: string }[]
+const navLinks: { href: Route; label: string; icon: string }[] = [
+  { href: '/app/dashboard' as Route, label: 'Accueil', icon: '🏠' },
+  { href: '/app/clients' as Route, label: 'Clients', icon: '👥' },
+  { href: '/app/devis' as Route, label: 'Devis', icon: '🧾' },
+  { href: '/app/factures' as Route, label: 'Factures', icon: '💶' },
+  { href: '/app/profil' as Route, label: 'Profil', icon: '⚙️' },
+]
 
 function currentPageTitle(pathname: string) {
   const match = navLinks.find((link) => pathname.startsWith(link.href))
