@@ -1,3 +1,5 @@
+"use server"
+
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { hashPassword } from '@/lib/password'
@@ -6,8 +8,8 @@ import { createSession } from '@/lib/auth'
 // Action serveur d'inscription : création de l'utilisateur et de sa société
 // puis redirection vers le tableau de bord. Séparée pour faciliter l'usage
 // depuis un composant client dédié.
+// Directive placée en tête de fichier pour une utilisation sûre depuis un composant client.
 export async function handleRegister(prevState: { error?: string }, formData: FormData) {
-  'use server'
   const fullName = String(formData.get('fullName') || '').trim()
   const email = String(formData.get('email') || '').trim().toLowerCase()
   const password = String(formData.get('password') || '')

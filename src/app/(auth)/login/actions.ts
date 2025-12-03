@@ -1,13 +1,13 @@
+"use server"
+
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { verifyPassword } from '@/lib/password'
 import { createSession } from '@/lib/auth'
 
 // Action serveur responsable de la connexion d'un utilisateur.
-// Elle reste dans un module distinct pour permettre à la page et au
-// formulaire client de rester bien typés et compatibles avec App Router.
+// Directive placée en tête de fichier pour une utilisation sûre depuis un composant client.
 export async function handleLogin(prevState: { error?: string }, formData: FormData) {
-  'use server'
   const email = String(formData.get('email') || '').trim().toLowerCase()
   const password = String(formData.get('password') || '')
 
