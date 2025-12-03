@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import type { Route } from 'next'
 import { ReactNode } from 'react'
 import SecondaryButton from './ui/SecondaryButton'
 
@@ -11,7 +12,7 @@ const navLinks = [
   { href: '/app/devis', label: 'Devis', icon: '🧾' },
   { href: '/app/factures', label: 'Factures', icon: '💶' },
   { href: '/app/profil', label: 'Profil', icon: '⚙️' },
-]
+] satisfies { href: Route; label: string; icon: string }[]
 
 function currentPageTitle(pathname: string) {
   const match = navLinks.find((link) => pathname.startsWith(link.href))
