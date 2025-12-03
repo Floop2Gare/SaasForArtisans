@@ -4,6 +4,9 @@ const SESSION_TTL = 60 * 60 * 24 * 7 // 7 jours
 const encoder = new TextEncoder()
 const secret = process.env.AUTH_SECRET || 'dev-secret'
 
+// Utilise explicitement l’API Web Crypto pour l’Edge runtime (sans module Node "crypto").
+const webCrypto = globalThis.crypto
+
 let cachedKey: Promise<CryptoKey> | null = null
 
 function bufferToHex(buffer: ArrayBuffer) {
@@ -13,8 +16,9 @@ function bufferToHex(buffer: ArrayBuffer) {
 }
 
 async function getKey() {
+  if (!webCrypto?.subtle) throw new Error('Web Crypto non disponible')
   if (!cachedKey) {
-    cachedKey = crypto.subtle.importKey(
+    cachedKey = webCrypto.subtle.importKey(
       'raw',
       encoder.encode(secret),
       { name: 'HMAC', hash: 'SHA-256' },
@@ -27,13 +31,14 @@ async function getKey() {
 
 async function signPayload(payload: string) {
   const key = await getKey()
-  const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(payload))
+  const signature = await webCrypto!.subtle.sign('HMAC', key, encoder.encode(payload))
   return bufferToHex(signature)
 }
 
 export async function createSignedToken(userId: string) {
+  if (!webCrypto) throw new Error('Web Crypto non disponible')
   const expiresMs = Date.now() + SESSION_TTL * 1000
-  const nonce = crypto.randomUUID().replace(/-/g, '')
+  const nonce = webCrypto.randomUUID().replace(/-/g, '')
   const rawPayload = `${userId}:${expiresMs}:${nonce}`
   const signature = await signPayload(rawPayload)
   return { token: `${rawPayload}.${signature}`, expires: new Date(expiresMs) }
